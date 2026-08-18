@@ -115,7 +115,7 @@ const Dashboard = () => {
               ) : (
                 <>
                   <Play className="w-8 h-8 text-primary mb-1 transform group-hover:scale-110 transition-transform" />
-                  <span className="font-bold text-white text-lg tracking-widest uppercase">
+                  <span className="font-bold text-white text-[10px] md:text-lg sm:text-xs tracking-widest uppercase">
                     {workClicks > 0 ? `Bosing (${workClicks}/${workRequired})` : 'Yaratish'}
                   </span>
                   <span className="text-xs text-primary">- {user.recipeDetails?.energy_cost || 10} Energiya</span>
@@ -153,7 +153,7 @@ const Dashboard = () => {
               ) : (
                 <>
                   <Utensils className="w-8 h-8 text-success mb-1 transform group-hover:scale-110 transition-transform" />
-                  <span className="font-bold text-white text-lg tracking-widest uppercase">
+                  <span className="font-bold text-white text-[10px] md:text-lg sm:text-xs tracking-widest uppercase">
                      {eatClicks > 0 ? `Bosing (${eatClicks}/${eatRequired})` : 'Non yeyish'}
                   </span>
                   <span className="text-xs text-success">+ 50 Energiya</span>
@@ -169,10 +169,10 @@ const Dashboard = () => {
         {/* Inventory Bag */}
         <GlassCard delay={0.3} className="xl:col-span-2 min-h-[400px]">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-black text-white flex items-center tracking-wider">
-              <Package className="mr-3 text-accent w-6 h-6" /> Mening Xaltam (Inventar)
+            <h2 className="text-lg md:text-2xl font-black text-white flex items-center tracking-wider">
+              <Package className="mr-2 md:mr-3 text-accent w-5 h-5 md:w-6 md:h-6" /> Mening Xaltam
             </h2>
-            <div className="text-sm text-slate-400 bg-slate-900 px-3 py-1 rounded-full border border-slate-700">
+            <div className="text-[10px] md:text-sm text-slate-400 bg-slate-900 px-2 md:px-3 py-1 rounded-full border border-slate-700">
               {user.inventory?.length || 0} / 16 Slot
             </div>
           </div>
@@ -207,8 +207,8 @@ const Dashboard = () => {
         
         {/* Profession Details */}
         <GlassCard delay={0.4} className="min-h-[400px]">
-          <h2 className="text-xl font-bold text-white mb-6 flex items-center border-b border-slate-700 pb-4">
-            <Briefcase className="mr-2 text-secondary w-6 h-6" /> 
+          <h2 className="text-lg md:text-xl font-bold text-white mb-6 flex items-center border-b border-slate-700 pb-4">
+            <Briefcase className="mr-2 text-secondary w-5 h-5 md:w-6 md:h-6" /> 
             <span>{user.profession || 'Noma\'lum'}</span>
           </h2>
           

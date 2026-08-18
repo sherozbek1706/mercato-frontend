@@ -67,10 +67,10 @@ const Quests = () => {
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       
-      <GlassCard className="text-center p-8 bg-gradient-to-br from-primary/10 to-transparent">
-        <ScrollText className="w-16 h-16 text-primary mx-auto mb-4" />
-        <h1 className="text-3xl font-black text-white uppercase tracking-wider mb-2">Davlat Buyurtmalari</h1>
-        <p className="text-slate-400">
+      <GlassCard className="text-center p-6 md:p-8 bg-gradient-to-br from-primary/10 to-transparent">
+        <ScrollText className="w-12 h-12 md:w-16 md:h-16 text-primary mx-auto mb-3 md:mb-4" />
+        <h1 className="text-xl md:text-3xl font-black text-white uppercase tracking-wider mb-2">Davlat Buyurtmalari</h1>
+        <p className="text-xs md:text-base text-slate-400">
           Davlatga zudlik bilan resurslar kerak! O'zingizdagi ortiqcha mahsulotlarni to'g'ridan-to'g'ri (soliqsiz) davlatga sotib, mo'maygina daromad qiling. Kim birinchi topshirsa, foyda o'shaniki!
         </p>
       </GlassCard>

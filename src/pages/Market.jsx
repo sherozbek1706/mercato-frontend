@@ -122,25 +122,25 @@ const Market = () => {
     <div className="max-w-6xl mx-auto space-y-6">
       
       {/* Header and Tabs */}
-      <div className="flex flex-col md:flex-row justify-between items-center bg-surfaceSolid p-2 rounded-2xl border border-slate-800 shadow-lg">
-         <div className="flex space-x-2 w-full md:w-auto overflow-x-auto p-1">
+      <div className="flex flex-col md:flex-row justify-between items-center bg-surfaceSolid p-1.5 md:p-2 rounded-2xl border border-slate-800 shadow-lg">
+         <div className="flex w-full overflow-x-auto no-scrollbar space-x-1 md:space-x-2 p-1">
            <button 
              onClick={() => setActiveTab('market')}
-             className={`flex items-center px-6 py-3 rounded-xl font-bold transition-all ${activeTab === 'market' ? 'bg-primary text-white shadow-[0_0_15px_rgba(59,130,246,0.4)]' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+             className={`flex-1 flex items-center justify-center px-2 md:px-6 py-2.5 md:py-3 rounded-xl font-bold transition-all text-[11px] sm:text-sm md:text-base whitespace-nowrap ${activeTab === 'market' ? 'bg-primary text-white shadow-[0_0_15px_rgba(59,130,246,0.4)]' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
            >
-             <Store className="w-5 h-5 mr-2" /> Global Bozor
+             <Store className="w-3.5 h-3.5 md:w-5 md:h-5 mr-1.5 md:mr-2" /> Bozor
            </button>
            <button 
              onClick={() => setActiveTab('sell')}
-             className={`flex items-center px-6 py-3 rounded-xl font-bold transition-all ${activeTab === 'sell' ? 'bg-accent text-slate-900 shadow-[0_0_15px_rgba(251,191,36,0.4)]' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+             className={`flex-1 flex items-center justify-center px-2 md:px-6 py-2.5 md:py-3 rounded-xl font-bold transition-all text-[11px] sm:text-sm md:text-base whitespace-nowrap ${activeTab === 'sell' ? 'bg-accent text-slate-900 shadow-[0_0_15px_rgba(251,191,36,0.4)]' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
            >
-             <Tag className="w-5 h-5 mr-2" /> Sotish
+             <Tag className="w-3.5 h-3.5 md:w-5 md:h-5 mr-1.5 md:mr-2" /> Sotish
            </button>
            <button 
              onClick={() => setActiveTab('history')}
-             className={`flex items-center px-6 py-3 rounded-xl font-bold transition-all ${activeTab === 'history' ? 'bg-secondary text-white shadow-[0_0_15px_rgba(139,92,246,0.4)]' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+             className={`flex-1 flex items-center justify-center px-2 md:px-6 py-2.5 md:py-3 rounded-xl font-bold transition-all text-[11px] sm:text-sm md:text-base whitespace-nowrap ${activeTab === 'history' ? 'bg-secondary text-white shadow-[0_0_15px_rgba(139,92,246,0.4)]' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
            >
-             <History className="w-5 h-5 mr-2" /> Tarix
+             <History className="w-3.5 h-3.5 md:w-5 md:h-5 mr-1.5 md:mr-2" /> Tarix
            </button>
          </div>
       </div>
@@ -169,7 +169,7 @@ const Market = () => {
                     <GlassCard key={listing.id} className="p-0 overflow-hidden flex flex-col hover:border-primary/50 transition-colors group">
                        <div className="bg-slate-900/80 p-6 flex flex-col items-center justify-center border-b border-slate-800 relative">
                          {isMine && <span className="absolute top-2 right-2 bg-primary/20 text-primary text-[10px] uppercase font-bold px-2 py-1 rounded">Sizniki</span>}
-                         <span className="text-5xl mb-3 drop-shadow-lg group-hover:scale-110 transition-transform">{getItemIcon(listing)}</span>
+                         <span className="text-4xl md:text-5xl mb-2 md:mb-3 drop-shadow-lg group-hover:scale-110 transition-transform">{getItemIcon(listing)}</span>
                          <h3 className="text-lg font-bold text-white flex items-center">
                            {listing.seller_name.startsWith('🤖') && <span className="mr-2 text-xl" title="Tizim Boti">🤖</span>}
                            {listing.item_name}
@@ -216,10 +216,10 @@ const Market = () => {
             className="max-w-xl mx-auto"
           >
             <GlassCard>
-              <div className="text-center mb-8">
-                <Tag className="w-12 h-12 text-accent mx-auto mb-3" />
-                <h2 className="text-2xl font-black text-white uppercase tracking-wider">Mahsulot Sotish</h2>
-                <p className="text-slate-400">Inventaringizdagi narsalarni bozorga joylashtiring</p>
+              <div className="text-center mb-6 md:mb-8">
+                <Tag className="w-10 h-10 md:w-12 md:h-12 text-accent mx-auto mb-2 md:mb-3" />
+                <h2 className="text-xl md:text-2xl font-black text-white uppercase tracking-wider">Mahsulot Sotish</h2>
+                <p className="text-xs md:text-sm text-slate-400 mt-1">Inventaringizdagi narsalarni bozorga joylashtiring</p>
               </div>
 
               <form onSubmit={handleSell} className="space-y-5">
