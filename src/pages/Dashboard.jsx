@@ -252,32 +252,46 @@ const Dashboard = () => {
               </h3>
               
               <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-700">
-                <div className="space-y-3 mb-4">
-                  {user.recipeDetails?.consume?.map((c, i) => (
-                    <div key={i} className="flex items-center justify-between text-xs text-slate-400">
-                      <span>{c.name} x{c.qty} <span className="opacity-50">({c.avg_price ? Number(c.avg_price).toFixed(2) : '0'} dan)</span></span>
-                      <span className="text-danger font-bold">-{(c.qty * (c.avg_price || 0)).toFixed(2)} <Coins className="w-3 h-3 inline ml-0.5 text-slate-500"/></span>
-                    </div>
-                  ))}
-                  
-                  {user.recipeDetails?.produce?.map((p, i) => (
-                    <div key={i} className="flex items-center justify-between text-xs text-slate-400">
-                      <span>{p.name} x{p.qty} <span className="opacity-50">sotish narxi ({p.avg_price ? Number(p.avg_price).toFixed(2) : '0'})</span></span>
-                      <span className="text-success font-bold">+{(p.qty * (p.avg_price || 0)).toFixed(2)} <Coins className="w-3 h-3 inline ml-0.5 text-slate-500"/></span>
-                    </div>
-                  ))}
-                </div>
-                
                 {(() => {
-                  const cost = user.recipeDetails?.consume?.reduce((acc, c) => acc + (c.qty * (c.avg_price || 0)), 0) || 0;
-                  const revenue = user.recipeDetails?.produce?.reduce((acc, p) => acc + (p.qty * (p.avg_price || 0)), 0) || 0;
-                  const profit = revenue - cost;
+                  const totalCost = user.recipeDetails?.consume?.reduce((acc, c) => acc + (c.qty * (c.avg_price || 0)), 0) || 0;
+                  const producedItem = user.recipeDetails?.produce?.[0];
+                  
+                  if (!producedItem) return <div className="text-slate-500 text-sm">Sotish uchun mahsulot yo'q.</div>;
+
+                  const costPerItem = totalCost / producedItem.qty;
+                  const marketAvg = producedItem.avg_price || 0;
+                  
+                  // Agar xomashyo talab qilinmasa (konchi/dehqon), bozor narxini yoki bazaviy narxni tavsiya qilamiz
+                  // Agar xomashyo bo'lsa, tannarxga 30% foyda va 5% soliq (taxminan) qo'shib tavsiya beramiz
+                  let recommendedPrice = 0;
+                  if (costPerItem > 0) {
+                     recommendedPrice = costPerItem * 1.35; // 35% ustama
+                  } else {
+                     recommendedPrice = marketAvg > 0 ? marketAvg : (user.recipeDetails.energy_cost * 0.2);
+                  }
+
                   return (
-                    <div className="pt-3 border-t border-slate-800 flex justify-between items-center">
-                      <span className="text-sm text-slate-300 font-bold">Sof foyda (1 ta sikl)</span>
-                      <span className={`text-lg font-black flex items-center ${profit >= 0 ? 'text-success' : 'text-danger'}`}>
-                        {profit > 0 ? '+' : ''}{profit.toFixed(2)} <Coins className="w-4 h-4 ml-1" />
-                      </span>
+                    <div className="space-y-4">
+                      {totalCost > 0 && (
+                        <div className="flex justify-between items-center text-sm text-slate-400">
+                          <span>1 ta {producedItem.name} ning tannarxi:</span>
+                          <span className="font-bold text-white">{costPerItem.toFixed(2)} <Coins className="w-3 h-3 inline ml-0.5 text-slate-500"/></span>
+                        </div>
+                      )}
+                      
+                      <div className="bg-primary/10 p-3 rounded-lg border border-primary/20 flex flex-col items-center justify-center text-center">
+                         <span className="text-xs font-bold text-primary uppercase tracking-wider mb-1">Tavsiya etiladigan sotish narxi</span>
+                         <span className="text-2xl font-black text-white flex items-center drop-shadow-md">
+                           {recommendedPrice.toFixed(2)} <Coins className="w-5 h-5 ml-1 text-accent" />
+                         </span>
+                         <span className="text-[10px] text-slate-400 mt-1">1 dona {producedItem.name} uchun (foydasi bilan)</span>
+                      </div>
+                      
+                      {marketAvg > 0 && (
+                        <div className="text-center text-xs text-slate-500 mt-2">
+                           Bozordagi hozirgi o'rtacha narx: <span className="font-bold text-slate-300">{Number(marketAvg).toFixed(2)}</span>
+                        </div>
+                      )}
                     </div>
                   );
                 })()}
