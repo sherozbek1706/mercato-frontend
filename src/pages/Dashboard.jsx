@@ -246,9 +246,46 @@ const Dashboard = () => {
                 )}
               </div>
             </div>
+            <div className="mt-6 pt-6 border-t border-slate-800">
+              <h3 className="text-xs uppercase tracking-wider text-slate-500 mb-3 font-bold flex items-center">
+                <Search className="w-3 h-3 mr-1" /> Bozor holati (Kalkulyator)
+              </h3>
+              
+              <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-700">
+                <div className="space-y-3 mb-4">
+                  {user.recipeDetails?.consume?.map((c, i) => (
+                    <div key={i} className="flex items-center justify-between text-xs text-slate-400">
+                      <span>{c.name} x{c.qty} <span className="opacity-50">({c.avg_price ? Number(c.avg_price).toFixed(2) : '0'} dan)</span></span>
+                      <span className="text-danger font-bold">-{(c.qty * (c.avg_price || 0)).toFixed(2)} <Coins className="w-3 h-3 inline ml-0.5 text-slate-500"/></span>
+                    </div>
+                  ))}
+                  
+                  {user.recipeDetails?.produce?.map((p, i) => (
+                    <div key={i} className="flex items-center justify-between text-xs text-slate-400">
+                      <span>{p.name} x{p.qty} <span className="opacity-50">sotish narxi ({p.avg_price ? Number(p.avg_price).toFixed(2) : '0'})</span></span>
+                      <span className="text-success font-bold">+{(p.qty * (p.avg_price || 0)).toFixed(2)} <Coins className="w-3 h-3 inline ml-0.5 text-slate-500"/></span>
+                    </div>
+                  ))}
+                </div>
+                
+                {(() => {
+                  const cost = user.recipeDetails?.consume?.reduce((acc, c) => acc + (c.qty * (c.avg_price || 0)), 0) || 0;
+                  const revenue = user.recipeDetails?.produce?.reduce((acc, p) => acc + (p.qty * (p.avg_price || 0)), 0) || 0;
+                  const profit = revenue - cost;
+                  return (
+                    <div className="pt-3 border-t border-slate-800 flex justify-between items-center">
+                      <span className="text-sm text-slate-300 font-bold">Sof foyda (1 ta sikl)</span>
+                      <span className={`text-lg font-black flex items-center ${profit >= 0 ? 'text-success' : 'text-danger'}`}>
+                        {profit > 0 ? '+' : ''}{profit.toFixed(2)} <Coins className="w-4 h-4 ml-1" />
+                      </span>
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
             
-            <div className="mt-8 p-4 bg-accent/10 rounded-xl border border-accent/20">
-              <p className="text-sm text-accent/80 font-medium">💡 Maslahat: Yetishmayotgan mahsulotlarni Bozordan xarid qiling yoki o'z mahsulotlaringizni pullang!</p>
+            <div className="mt-4 p-4 bg-accent/10 rounded-xl border border-accent/20">
+              <p className="text-sm text-accent/80 font-medium">💡 Maslahat: Retsept ostidagi kalkulyator orqali bozordagi hozirgi narxlar asosida foyda yo zararni ko'rishingiz mumkin.</p>
             </div>
           </div>
         </GlassCard>
