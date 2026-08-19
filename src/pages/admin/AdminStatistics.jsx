@@ -61,7 +61,7 @@ const AdminStatistics = () => {
                  <div className="flex justify-between items-center bg-slate-100 p-2 rounded text-sm border-l-2 border-indigo-500">
                    <span className="text-slate-600 font-semibold">Tannarx (Ishlab chiqarish):</span>
                    <span className="font-bold text-indigo-700">
-                     {item.base_cost === 0 ? 'Xomashyo' : (item.base_cost ? Number(item.base_cost).toFixed(2) : 'Noma\'lum')}
+                     {item.base_cost === -1 ? 'Xomashyo' : (item.base_cost !== null && item.base_cost !== undefined ? Number(item.base_cost).toFixed(2) : 'Noma\'lum')}
                    </span>
                  </div>
                  <div className="flex justify-between items-center bg-slate-50 p-2 rounded text-sm">
