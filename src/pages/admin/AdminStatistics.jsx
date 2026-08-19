@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../../services/api';
+import api from '../../services/api';
 import { BarChart3, TrendingUp, DollarSign, Package } from 'lucide-react';
 import toast from 'react-hot-toast';
 
