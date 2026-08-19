@@ -58,6 +58,12 @@ const AdminStatistics = () => {
                    <span className="text-slate-500 flex items-center"><TrendingUp className="w-4 h-4 mr-1 text-slate-400"/> O'rtacha narx:</span>
                    <span className="font-bold text-blue-600">{item.avg_price ? Number(item.avg_price).toFixed(2) : 'Bozorda yo\'q'}</span>
                  </div>
+                 <div className="flex justify-between items-center bg-slate-100 p-2 rounded text-sm border-l-2 border-indigo-500">
+                   <span className="text-slate-600 font-semibold">Tannarx (Ishlab chiqarish):</span>
+                   <span className="font-bold text-indigo-700">
+                     {item.base_cost === 0 ? 'Xomashyo' : (item.base_cost ? Number(item.base_cost).toFixed(2) : 'Noma\'lum')}
+                   </span>
+                 </div>
                  <div className="flex justify-between items-center bg-slate-50 p-2 rounded text-sm">
                    <span className="text-slate-500 flex items-center"><DollarSign className="w-4 h-4 mr-1 text-slate-400"/> Eng arzon:</span>
                    <span className="font-bold text-emerald-600">{item.min_price ? Number(item.min_price).toFixed(2) : '-'}</span>
