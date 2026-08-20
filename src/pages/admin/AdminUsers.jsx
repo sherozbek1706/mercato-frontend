@@ -3,6 +3,7 @@ import api from '../../services/api';
 import toast from 'react-hot-toast';
 import ConfirmModal from '../../components/common/ConfirmModal';
 import UserDetailsModal from '../../components/admin/UserDetailsModal';
+import UserEditModal from '../../components/admin/UserEditModal';
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
@@ -13,6 +14,9 @@ const AdminUsers = () => {
 
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
   const [userToShow, setUserToShow] = useState(null);
+
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [userToEdit, setUserToEdit] = useState(null);
 
   useEffect(() => {
     fetchUsers();
@@ -38,6 +42,11 @@ const AdminUsers = () => {
   const openDetails = (id) => {
     setUserToShow(id);
     setDetailsModalOpen(true);
+  };
+
+  const openEdit = (user) => {
+    setUserToEdit(user);
+    setEditModalOpen(true);
   };
 
   const handleDelete = async () => {
@@ -89,6 +98,12 @@ const AdminUsers = () => {
                       Batafsil
                     </button>
                     <button 
+                      onClick={() => openEdit(user)}
+                      className="text-amber-600 hover:text-amber-800 font-medium bg-amber-50 px-3 py-1 rounded-md"
+                    >
+                      Tahrirlash
+                    </button>
+                    <button 
                       onClick={() => confirmDelete(user.id)}
                       className="text-red-600 hover:text-red-800 font-medium bg-red-50 px-3 py-1 rounded-md"
                     >
@@ -119,6 +134,13 @@ const AdminUsers = () => {
         isOpen={detailsModalOpen}
         onClose={() => setDetailsModalOpen(false)}
         userId={userToShow}
+      />
+
+      <UserEditModal 
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        user={userToEdit}
+        onSaved={fetchUsers}
       />
     </div>
   );
