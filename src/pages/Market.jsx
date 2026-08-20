@@ -286,6 +286,36 @@ const Market = () => {
                 <button type="submit" disabled={isSelling} className="w-full btn-accent text-slate-900 text-lg mt-6 shadow-lg py-3 flex justify-center items-center">
                   {isSelling ? <><div className="w-5 h-5 border-2 border-slate-900 border-t-transparent rounded-full animate-spin mr-2" /> Joylashtirilmoqda...</> : "Bozorga Chiqarish"}
                 </button>
+                <button 
+                  type="button" 
+                  onClick={async () => {
+                    if (!sellItemId || !sellQty) return toast.error("Mahsulot va miqdorni tanlang");
+                    if (isSelling) return;
+                    
+                    if (!window.confirm("Rostdan ham ushbu mahsulotni davlatga sotmoqchimisiz? Davlat bozordagi o'rtacha narxdan 40% arzonroqqa oladi, lekin darhol sotiladi!")) {
+                      return;
+                    }
+
+                    // eslint-disable-next-line no-undef
+                    setIsSelling(true);
+                    try {
+                      const res = await api.post('/market/sell-to-bot', { item_id: parseInt(sellItemId), quantity: parseInt(sellQty) });
+                      toast.success(res.data.message);
+                      setSellItemId(''); setSellQty(''); setSellPrice('');
+                      setActiveTab('market');
+                      fetchData();
+                      fetchUser();
+                    } catch (error) {
+                      toast.error(error.response?.data?.message || 'Xatolik yuz berdi');
+                    } finally {
+                      setIsSelling(false);
+                    }
+                  }}
+                  disabled={isSelling} 
+                  className="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-3 md:py-4 rounded-xl border border-slate-700 transition-colors mt-3 shadow-lg flex justify-center items-center"
+                >
+                  Davlatga Sotish (Darhol Sotiladi)
+                </button>
               </form>
             </GlassCard>
           </motion.div>
