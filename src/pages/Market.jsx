@@ -13,6 +13,7 @@ const Market = () => {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('market'); // market | history | sell
+  const [marketFilter, setMarketFilter] = useState('users'); // users | bots
   
   // Sell Form States
   const [sellItemId, setSellItemId] = useState('');
@@ -153,17 +154,33 @@ const Market = () => {
             key="market"
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
           >
+            {/* Sub-tabs for Users vs Bots */}
+            <div className="flex justify-center mb-6 space-x-2">
+              <button 
+                onClick={() => setMarketFilter('users')}
+                className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${marketFilter === 'users' ? 'bg-primary text-white shadow-lg' : 'bg-slate-800 text-slate-400 hover:text-white'}`}
+              >
+                Foydalanuvchilar
+              </button>
+              <button 
+                onClick={() => setMarketFilter('bots')}
+                className={`px-4 py-2 rounded-lg font-bold text-sm transition-all ${marketFilter === 'bots' ? 'bg-accent text-slate-900 shadow-lg' : 'bg-slate-800 text-slate-400 hover:text-white'}`}
+              >
+                Davlat Do'koni
+              </button>
+            </div>
+
             {loading ? (
               <div className="flex justify-center items-center py-20"><div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin"></div></div>
-            ) : listings.length === 0 ? (
+            ) : listings.filter(l => marketFilter === 'bots' ? l.is_bot : !l.is_bot).length === 0 ? (
               <GlassCard className="text-center py-20">
                 <Store className="w-16 h-16 mx-auto text-slate-700 mb-4" />
                 <h3 className="text-2xl font-bold text-slate-400">Bozor hozircha bo'sh</h3>
-                <p className="text-slate-500 mt-2">Birinchi bo'lib o'z mahsulotingizni soting!</p>
+                <p className="text-slate-500 mt-2">Hozircha bu bo'limda mahsulotlar yo'q</p>
               </GlassCard>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                {listings.map((listing) => {
+                {listings.filter(l => marketFilter === 'bots' ? l.is_bot : !l.is_bot).map((listing) => {
                   const isMine = user?.username === listing.seller_name;
                   return (
                     <GlassCard key={listing.id} className="p-0 overflow-hidden flex flex-col hover:border-primary/50 transition-colors group">
