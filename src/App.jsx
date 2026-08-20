@@ -11,6 +11,7 @@ import socket from './services/socket';
 import MainLayout from './components/layout/MainLayout';
 
 import Quests from './pages/Quests';
+import ProfessionModal from './components/modals/ProfessionModal';
 
 // Admin Pages
 import AdminLayout from './pages/admin/AdminLayout';
@@ -62,6 +63,7 @@ function App() {
     <AuthProvider>
       <Router>
         <GlobalListener />
+        <ProfessionModal />
         <Routes>
           {/* Public & Player Routes */}
           <Route path="/login" element={<Login />} />

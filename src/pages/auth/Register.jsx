@@ -20,24 +20,14 @@ const Register = () => {
   const { fetchUser } = useContext(AuthContext);
   const [formData, setFormData] = useState({
     username: "",
-    password: "",
-    profession_id: "",
+    password: ""
   });
-  const [professions, setProfessions] = useState([]);
   const [telegramData, setTelegramData] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const botUsername =
     import.meta.env.VITE_TELEGRAM_BOT_USERNAME || "mercato_game_bot";
-
-  useEffect(() => {
-    // Kasblarni yuklash
-    api
-      .get("/professions")
-      .then((res) => setProfessions(res.data))
-      .catch((err) => console.error(err));
-  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -184,32 +174,6 @@ const Register = () => {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-slate-300 mb-1.5 ml-1">
-                  Kasb tanlang
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Briefcase className="h-5 w-5 text-slate-500" />
-                  </div>
-                  <select
-                    name="profession_id"
-                    className="pl-10 pr-10 w-full input-glass h-12 text-base transition-all focus:bg-slate-800/80 appearance-none bg-slate-900 text-slate-200"
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="" className="bg-slate-800 text-slate-400">Kasbni tanlang...</option>
-                    {professions.map((prof) => (
-                      <option key={prof.id} value={prof.id} className="bg-slate-800 text-slate-200">
-                        {prof.name}
-                      </option>
-                    ))}
-                  </select>
-                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                    <ChevronRight className="h-4 w-4 text-slate-500 rotate-90" />
-                  </div>
-                </div>
-              </div>
             </div>
 
             <button
