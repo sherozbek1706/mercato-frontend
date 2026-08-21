@@ -10,7 +10,11 @@ const AdminSettings = () => {
   const [formData, setFormData] = useState({
     work_clicks: 20,
     eat_clicks: 10,
-    market_tax_percent: 5
+    market_tax_percent: 5,
+    bot_buyer_enabled: false,
+    bot_buyer_probability: 70,
+    bot_buyer_min_qty: 1,
+    bot_buyer_max_qty: 5
   });
 
   useEffect(() => {
@@ -23,7 +27,11 @@ const AdminSettings = () => {
       setFormData({
         work_clicks: Number(res.data.work_clicks) || 20,
         eat_clicks: Number(res.data.eat_clicks) || 10,
-        market_tax_percent: res.data.market_tax_percent !== undefined ? Number(res.data.market_tax_percent) : 5
+        market_tax_percent: res.data.market_tax_percent !== undefined ? Number(res.data.market_tax_percent) : 5,
+        bot_buyer_enabled: res.data.bot_buyer_enabled === 'true',
+        bot_buyer_probability: res.data.bot_buyer_probability !== undefined ? Number(res.data.bot_buyer_probability) : 70,
+        bot_buyer_min_qty: res.data.bot_buyer_min_qty !== undefined ? Number(res.data.bot_buyer_min_qty) : 1,
+        bot_buyer_max_qty: res.data.bot_buyer_max_qty !== undefined ? Number(res.data.bot_buyer_max_qty) : 5
       });
     } catch (error) {
       toast.error('Sozlamalarni yuklashda xatolik');
@@ -103,6 +111,62 @@ const AdminSettings = () => {
                 />
                 <p className="text-xs text-slate-500 mt-1">O'yinchilar bozorda narsa sotganida shu foiz ularning daromadidan avtomatik ushlab qolinadi va tizimga yutiladi.</p>
               </div>
+            </div>
+          </div>
+
+          <div className="pt-4 border-t border-slate-200">
+            <h3 className="text-lg font-bold text-slate-900 mb-4 border-b pb-2">Sirli Xaridor Boti (NPC)</h3>
+            
+            <div className="space-y-4">
+              <label className="flex items-center space-x-3 cursor-pointer">
+                <input 
+                  type="checkbox"
+                  checked={formData.bot_buyer_enabled}
+                  onChange={(e) => setFormData({...formData, bot_buyer_enabled: e.target.checked})}
+                  className="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="text-sm font-medium text-slate-700">Tizim avtomatik ravishda foydalanuvchilardan narsa sotib olishi yoqilganmi?</span>
+              </label>
+              
+              {formData.bot_buyer_enabled && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      Xarid ehtimolligi (0-100%)
+                    </label>
+                    <input 
+                      type="number" 
+                      min="1" max="100"
+                      value={formData.bot_buyer_probability} 
+                      onChange={e => setFormData({...formData, bot_buyer_probability: Number(e.target.value)})} 
+                      className="w-full px-4 py-2 border rounded-lg bg-white" 
+                    />
+                    <p className="text-[11px] text-slate-500 mt-1">Bot har 1 daqiqada shuncha foiz ehtimollik bilan kimdandir narsa sotib oladi.</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      Min. miqdor
+                    </label>
+                    <input 
+                      type="number" min="1"
+                      value={formData.bot_buyer_min_qty} 
+                      onChange={e => setFormData({...formData, bot_buyer_min_qty: Number(e.target.value)})} 
+                      className="w-full px-4 py-2 border rounded-lg bg-white" 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      Max. miqdor
+                    </label>
+                    <input 
+                      type="number" min="1"
+                      value={formData.bot_buyer_max_qty} 
+                      onChange={e => setFormData({...formData, bot_buyer_max_qty: Number(e.target.value)})} 
+                      className="w-full px-4 py-2 border rounded-lg bg-white" 
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
