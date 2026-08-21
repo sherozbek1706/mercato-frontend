@@ -106,7 +106,7 @@ const MainLayout = ({ children }) => {
                ) : (
                  <>
                    <img 
-                     src={user.profile_picture ? `${api.defaults.baseURL.replace('/api', '')}${user.profile_picture}` : `https://api.dicebear.com/7.x/bottts/svg?seed=${user.username}`} 
+                     src={user.profile_picture ? (user.profile_picture.startsWith('http') ? user.profile_picture : `${api.defaults.baseURL.replace('/api', '')}${user.profile_picture}`) : `https://api.dicebear.com/7.x/bottts/svg?seed=${user.username}`} 
                      alt="avatar" 
                      className="rounded-full w-full h-full object-cover bg-slate-900" 
                    />
@@ -188,7 +188,7 @@ const MainLayout = ({ children }) => {
                 ) : (
                   <>
                     <img 
-                      src={user.profile_picture ? `${api.defaults.baseURL.replace('/api', '')}${user.profile_picture}` : `https://api.dicebear.com/7.x/bottts/svg?seed=${user.username}`} 
+                      src={user.profile_picture ? (user.profile_picture.startsWith('http') ? user.profile_picture : `${api.defaults.baseURL.replace('/api', '')}${user.profile_picture}`) : `https://api.dicebear.com/7.x/bottts/svg?seed=${user.username}`} 
                       alt="avatar" 
                       className="rounded-full w-full h-full object-cover bg-slate-900" 
                     />

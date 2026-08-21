@@ -64,7 +64,7 @@ const Leaderboard = () => {
                   
                   <div className="flex-1 min-w-0 flex items-center space-x-3">
                     <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-slate-800 border border-slate-700 p-0.5 overflow-hidden flex-shrink-0">
-                      <img src={user.profile_picture ? `${api.defaults.baseURL.replace('/api', '')}${user.profile_picture}` : `https://api.dicebear.com/7.x/bottts/svg?seed=${user.username}`} alt="avatar" className="w-full h-full object-cover bg-slate-900" />
+                      <img src={user.profile_picture ? (user.profile_picture.startsWith('http') ? user.profile_picture : `${api.defaults.baseURL.replace('/api', '')}${user.profile_picture}`) : `https://api.dicebear.com/7.x/bottts/svg?seed=${user.username}`} alt="avatar" className="w-full h-full object-cover bg-slate-900" />
                     </div>
                     <div>
                       <p className={`text-base md:text-lg font-bold truncate ${isTop3 ? 'text-white' : 'text-slate-200'}`}>

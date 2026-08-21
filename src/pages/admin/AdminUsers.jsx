@@ -106,7 +106,7 @@ const AdminUsers = () => {
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 overflow-hidden flex-shrink-0">
                       {user.profile_picture ? (
-                        <img src={`${api.defaults.baseURL.replace('/api', '')}${user.profile_picture}`} alt="avatar" className="w-full h-full object-cover" />
+                        <img src={user.profile_picture.startsWith('http') ? user.profile_picture : `${api.defaults.baseURL.replace('/api', '')}${user.profile_picture}`} alt="avatar" className="w-full h-full object-cover" />
                       ) : (
                         <img src={`https://api.dicebear.com/7.x/bottts/svg?seed=${user.username}`} alt="avatar" className="w-full h-full object-cover bg-slate-100" />
                       )}
