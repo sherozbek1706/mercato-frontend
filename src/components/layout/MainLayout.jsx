@@ -11,21 +11,25 @@ const MainLayout = ({ children }) => {
   const location = useLocation();
   const [isUploading, setIsUploading] = useState(false);
   const cost = user?.settings?.profile_picture_cost ? Number(user.settings.profile_picture_cost) : 0;
+  const removeRefund = user?.settings?.profile_picture_remove_coin ? Number(user.settings.profile_picture_remove_coin) : 0;
 
   const handleProfilePicUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     
+    if (user.profile_picture) {
+      toast.error("Avval eski rasmni o'chirishingiz kerak!");
+      e.target.value = '';
+      return;
+    }
+
     if (user.balance < cost) {
       toast.error(`Hisobingizda yetarli mablag' yo'q. Rasm yuklash narxi: ${cost} tanga`);
+      e.target.value = '';
       return;
     }
     
-    const confirmMsg = user.profile_picture 
-      ? `Yangi rasm o'rnatmoqchimisiz? Eski rasm o'chiriladi.` 
-      : `Profil rasmini o'rnatish narxi ${cost} tanga. Rozimisiz?`;
-    
-    if (!window.confirm(confirmMsg)) {
+    if (!window.confirm(`Profil rasmini o'rnatish narxi ${cost} tanga. Rozimisiz?`)) {
       e.target.value = '';
       return;
     }
@@ -52,7 +56,7 @@ const MainLayout = ({ children }) => {
 
   const handleProfilePicRemove = async (e) => {
     e.stopPropagation();
-    if (!window.confirm(`Rasmni o'chirsangiz ${cost} tanga hisobingizga qaytariladi. Rozimisiz?`)) return;
+    if (!window.confirm(`Rasmni o'chirsangiz ${removeRefund} tanga hisobingizga qaytariladi. Rozimisiz?`)) return;
     
     setIsUploading(true);
     try {
@@ -92,8 +96,8 @@ const MainLayout = ({ children }) => {
           
           <div className="p-4 flex flex-col items-center border-b border-slate-800">
             <div 
-              className={`w-20 h-20 rounded-full bg-slate-800 border-2 border-primary p-1 mb-3 relative animate-float group ${!isUploading && 'cursor-pointer'}`}
-              onClick={() => !isUploading && document.getElementById('profile-pic-upload').click()}
+              className={`w-20 h-20 rounded-full bg-slate-800 border-2 border-primary p-1 mb-3 relative animate-float group ${!isUploading && !user.profile_picture ? 'cursor-pointer' : ''}`}
+              onClick={() => !isUploading && !user.profile_picture && document.getElementById('profile-pic-upload').click()}
             >
                {isUploading ? (
                  <div className="rounded-full w-full h-full bg-slate-900 flex items-center justify-center">
@@ -106,9 +110,11 @@ const MainLayout = ({ children }) => {
                      alt="avatar" 
                      className="rounded-full w-full h-full object-cover bg-slate-900" 
                    />
-                   <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                     <span className="text-[10px] text-white text-center font-bold px-2">{cost > 0 ? `Rasm yuklash (${cost} 🪙)` : 'Rasm yuklash'}</span>
-                   </div>
+                   {!user.profile_picture && (
+                     <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                       <span className="text-[10px] text-white text-center font-bold px-2">{cost > 0 ? `Rasm yuklash (${cost} 🪙)` : 'Rasm yuklash'}</span>
+                     </div>
+                   )}
                  </>
                )}
                <input 
@@ -170,7 +176,38 @@ const MainLayout = ({ children }) => {
              <h2 className="text-xl font-bold text-slate-200 capitalize">{location.pathname === '/' ? 'Dashboard' : location.pathname.substring(1)}</h2>
            </div>
            
-           <div className="flex-1 md:hidden flex items-center">
+           <div className="flex-1 md:hidden flex items-center space-x-3">
+             <div 
+               className={`w-10 h-10 rounded-full bg-slate-800 border-2 border-primary p-0.5 relative group ${!isUploading && !user.profile_picture ? 'cursor-pointer' : ''}`}
+               onClick={() => !isUploading && !user.profile_picture && document.getElementById('profile-pic-upload').click()}
+             >
+                {isUploading ? (
+                  <div className="rounded-full w-full h-full bg-slate-900 flex items-center justify-center">
+                    <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                  </div>
+                ) : (
+                  <>
+                    <img 
+                      src={user.profile_picture ? `${api.defaults.baseURL.replace('/api', '')}${user.profile_picture}` : `https://api.dicebear.com/7.x/bottts/svg?seed=${user.username}`} 
+                      alt="avatar" 
+                      className="rounded-full w-full h-full object-cover bg-slate-900" 
+                    />
+                    {!user.profile_picture && (
+                      <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span className="text-[10px] text-white">+</span >
+                      </div>
+                    )}
+                  </>
+                )}
+                {user.profile_picture && !isUploading && (
+                  <button 
+                    onClick={handleProfilePicRemove}
+                    className="absolute -top-1 -right-1 bg-danger text-white rounded-full p-0.5 shadow-lg hover:bg-red-600 transition-colors"
+                  >
+                    <X className="w-2.5 h-2.5" />
+                  </button>
+                )}
+             </div>
              <h1 className="text-xl game-title text-primary tracking-widest">MERCATO</h1>
            </div>
            
