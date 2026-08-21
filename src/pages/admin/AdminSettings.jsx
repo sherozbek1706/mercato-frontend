@@ -18,7 +18,8 @@ const AdminSettings = () => {
     bot_buyer_max_qty: 5,
     bot_buyer_min_price: 0.01,
     bot_buyer_max_price: 1000,
-    bot_buyer_names: 'Ali, Hasan, Boyota, Savdogar'
+    bot_buyer_names: 'Ali, Hasan, Boyota, Savdogar',
+    profile_picture_cost: 0
   });
 
   useEffect(() => {
@@ -39,7 +40,8 @@ const AdminSettings = () => {
         bot_buyer_max_qty: res.data.bot_buyer_max_qty !== undefined ? Number(res.data.bot_buyer_max_qty) : 5,
         bot_buyer_min_price: res.data.bot_buyer_min_price !== undefined ? Number(res.data.bot_buyer_min_price) : 0.01,
         bot_buyer_max_price: res.data.bot_buyer_max_price !== undefined ? Number(res.data.bot_buyer_max_price) : 1000,
-        bot_buyer_names: res.data.bot_buyer_names || 'Ali, Hasan, Boyota, Savdogar'
+        bot_buyer_names: res.data.bot_buyer_names || 'Ali, Hasan, Boyota, Savdogar',
+        profile_picture_cost: res.data.profile_picture_cost !== undefined ? Number(res.data.profile_picture_cost) : 0
       });
     } catch (error) {
       toast.error('Sozlamalarni yuklashda xatolik');
@@ -118,6 +120,20 @@ const AdminSettings = () => {
                   className="w-full px-4 py-2 border rounded-lg" 
                 />
                 <p className="text-xs text-slate-500 mt-1">O'yinchilar bozorda narsa sotganida shu foiz ularning daromadidan avtomatik ushlab qolinadi va tizimga yutiladi.</p>
+              </div>
+              <div className="pt-4 border-t border-slate-100">
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Profil rasmi o'rnatish narxi (tanga)
+                </label>
+                <input 
+                  type="number" 
+                  min="0"
+                  required 
+                  value={formData.profile_picture_cost} 
+                  onChange={e => setFormData({...formData, profile_picture_cost: Number(e.target.value)})} 
+                  className="w-full px-4 py-2 border rounded-lg" 
+                />
+                <p className="text-xs text-slate-500 mt-1">Foydalanuvchilar o'z profiliga rasm yuklaganida ularning hisobidan yechib olinadigan summa.</p>
               </div>
             </div>
           </div>

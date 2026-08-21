@@ -1,12 +1,70 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
-import { Home, ShoppingCart, Trophy, Settings, LogOut, Coins, Battery, Shield, ScrollText } from 'lucide-react';
+import { Home, ShoppingCart, Trophy, Settings, LogOut, Coins, Battery, Shield, ScrollText, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import api from '../../services/api';
+import toast from 'react-hot-toast';
 
 const MainLayout = ({ children }) => {
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout, fetchUser } = useContext(AuthContext);
   const location = useLocation();
+  const [isUploading, setIsUploading] = useState(false);
+  const cost = user?.settings?.profile_picture_cost ? Number(user.settings.profile_picture_cost) : 0;
+
+  const handleProfilePicUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    
+    if (user.balance < cost) {
+      toast.error(`Hisobingizda yetarli mablag' yo'q. Rasm yuklash narxi: ${cost} tanga`);
+      return;
+    }
+    
+    const confirmMsg = user.profile_picture 
+      ? `Yangi rasm o'rnatmoqchimisiz? Eski rasm o'chiriladi.` 
+      : `Profil rasmini o'rnatish narxi ${cost} tanga. Rozimisiz?`;
+    
+    if (!window.confirm(confirmMsg)) {
+      e.target.value = '';
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('profile_picture', file);
+
+    setIsUploading(true);
+    try {
+      const res = await api.post('/auth/profile-picture', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      toast.success(res.data.message);
+      fetchUser();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Xatolik yuz berdi');
+    } finally {
+      setIsUploading(false);
+      e.target.value = '';
+    }
+  };
+
+  const handleProfilePicRemove = async (e) => {
+    e.stopPropagation();
+    if (!window.confirm(`Rasmni o'chirsangiz ${cost} tanga hisobingizga qaytariladi. Rozimisiz?`)) return;
+    
+    setIsUploading(true);
+    try {
+      const res = await api.delete('/auth/profile-picture');
+      toast.success(res.data.message);
+      fetchUser();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Xatolik yuz berdi');
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   if (!user) return <>{children}</>;
 
@@ -33,8 +91,43 @@ const MainLayout = ({ children }) => {
           </div>
           
           <div className="p-4 flex flex-col items-center border-b border-slate-800">
-            <div className="w-20 h-20 rounded-full bg-slate-800 border-2 border-primary p-1 mb-3 relative animate-float">
-               <img src={`https://api.dicebear.com/7.x/bottts/svg?seed=${user.username}`} alt="avatar" className="rounded-full w-full h-full object-cover bg-slate-900" />
+            <div 
+              className={`w-20 h-20 rounded-full bg-slate-800 border-2 border-primary p-1 mb-3 relative animate-float group ${!isUploading && 'cursor-pointer'}`}
+              onClick={() => !isUploading && document.getElementById('profile-pic-upload').click()}
+            >
+               {isUploading ? (
+                 <div className="rounded-full w-full h-full bg-slate-900 flex items-center justify-center">
+                   <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                 </div>
+               ) : (
+                 <>
+                   <img 
+                     src={user.profile_picture ? `${api.defaults.baseURL.replace('/api', '')}${user.profile_picture}` : `https://api.dicebear.com/7.x/bottts/svg?seed=${user.username}`} 
+                     alt="avatar" 
+                     className="rounded-full w-full h-full object-cover bg-slate-900" 
+                   />
+                   <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                     <span className="text-[10px] text-white text-center font-bold px-2">{cost > 0 ? `Rasm yuklash (${cost} 🪙)` : 'Rasm yuklash'}</span>
+                   </div>
+                 </>
+               )}
+               <input 
+                 type="file" 
+                 id="profile-pic-upload" 
+                 accept="image/*" 
+                 className="hidden" 
+                 onChange={handleProfilePicUpload} 
+                 disabled={isUploading}
+               />
+               {user.profile_picture && !isUploading && (
+                 <button 
+                   onClick={handleProfilePicRemove}
+                   className="absolute -top-1 -right-1 bg-danger text-white rounded-full p-1 shadow-lg hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
+                   title="Rasmni o'chirish"
+                 >
+                   <X className="w-3 h-3" />
+                 </button>
+               )}
             </div>
             <h2 className="text-xl font-bold text-white">{user.username}</h2>
             <div className="flex items-center text-secondary text-sm mt-1 bg-secondary/10 px-3 py-1 rounded-full font-medium">
