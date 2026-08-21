@@ -102,7 +102,18 @@ const AdminUsers = () => {
             {users.map(user => (
               <tr key={user.id} className="hover:bg-slate-50">
                 <td className="px-6 py-4 text-sm text-slate-500 font-mono truncate max-w-[100px]">{user.id}</td>
-                <td className="px-6 py-4 text-sm font-medium text-slate-900">{user.username}</td>
+                <td className="px-6 py-4 text-sm font-medium text-slate-900">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 overflow-hidden flex-shrink-0">
+                      {user.profile_picture ? (
+                        <img src={`${api.defaults.baseURL.replace('/api', '')}${user.profile_picture}`} alt="avatar" className="w-full h-full object-cover" />
+                      ) : (
+                        <img src={`https://api.dicebear.com/7.x/bottts/svg?seed=${user.username}`} alt="avatar" className="w-full h-full object-cover bg-slate-100" />
+                      )}
+                    </div>
+                    <span>{user.username}</span>
+                  </div>
+                </td>
                 <td className="px-6 py-4 text-sm text-slate-600">{user.profession_name}</td>
                 <td className="px-6 py-4 text-sm text-amber-600 font-bold">{Number(user.balance).toFixed(2)}</td>
                 <td className="px-6 py-4 text-sm text-blue-600 font-medium">{user.energy}</td>

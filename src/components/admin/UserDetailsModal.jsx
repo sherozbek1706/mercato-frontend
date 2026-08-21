@@ -49,8 +49,12 @@ const UserDetailsModal = ({ isOpen, onClose, userId }) => {
             <div className="space-y-6">
               {/* Header info */}
               <div className="flex items-center space-x-4 mb-6 pb-6 border-b border-slate-100">
-                <div className="w-16 h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-2xl font-bold uppercase">
-                  {details.username.charAt(0)}
+                <div className="w-16 h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-2xl font-bold uppercase overflow-hidden border border-slate-200">
+                  {details.profile_picture ? (
+                     <img src={`${api.defaults.baseURL.replace('/api', '')}${details.profile_picture}`} alt="avatar" className="w-full h-full object-cover" />
+                  ) : (
+                     <img src={`https://api.dicebear.com/7.x/bottts/svg?seed=${details.username}`} alt="avatar" className="w-full h-full object-cover bg-slate-100" />
+                  )}
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-slate-900">{details.username}</h2>
