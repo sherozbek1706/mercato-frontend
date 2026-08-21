@@ -12,6 +12,7 @@ const AdminSettings = () => {
     eat_clicks: 10,
     market_tax_percent: 5,
     bot_buyer_enabled: false,
+    bot_buyer_interval_min: 1,
     bot_buyer_probability: 70,
     bot_buyer_min_qty: 1,
     bot_buyer_max_qty: 5,
@@ -32,6 +33,7 @@ const AdminSettings = () => {
         eat_clicks: Number(res.data.eat_clicks) || 10,
         market_tax_percent: res.data.market_tax_percent !== undefined ? Number(res.data.market_tax_percent) : 5,
         bot_buyer_enabled: res.data.bot_buyer_enabled === 'true',
+        bot_buyer_interval_min: res.data.bot_buyer_interval_min !== undefined ? Number(res.data.bot_buyer_interval_min) : 1,
         bot_buyer_probability: res.data.bot_buyer_probability !== undefined ? Number(res.data.bot_buyer_probability) : 70,
         bot_buyer_min_qty: res.data.bot_buyer_min_qty !== undefined ? Number(res.data.bot_buyer_min_qty) : 1,
         bot_buyer_max_qty: res.data.bot_buyer_max_qty !== undefined ? Number(res.data.bot_buyer_max_qty) : 5,
@@ -136,7 +138,18 @@ const AdminSettings = () => {
               
               {formData.bot_buyer_enabled && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                  <div className="md:col-span-2">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      Xarid qilish oraliq vaqti (daqiqa)
+                    </label>
+                    <input 
+                      type="number" step="0.5" min="0.1"
+                      value={formData.bot_buyer_interval_min} 
+                      onChange={e => setFormData({...formData, bot_buyer_interval_min: Number(e.target.value)})} 
+                      className="w-full px-4 py-2 border rounded-lg bg-white" 
+                    />
+                  </div>
+                  <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1">
                       Xarid ehtimolligi (0-100%)
                     </label>
@@ -147,7 +160,6 @@ const AdminSettings = () => {
                       onChange={e => setFormData({...formData, bot_buyer_probability: Number(e.target.value)})} 
                       className="w-full px-4 py-2 border rounded-lg bg-white" 
                     />
-                    <p className="text-[11px] text-slate-500 mt-1">Bot har 1 daqiqada shuncha foiz ehtimollik bilan kimdandir narsa sotib oladi.</p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-700 mb-1">
