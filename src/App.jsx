@@ -11,6 +11,7 @@ import socket from './services/socket';
 import MainLayout from './components/layout/MainLayout';
 
 import Quests from './pages/Quests';
+import Leaderboard from './pages/Leaderboard';
 import ProfessionModal from './components/modals/ProfessionModal';
 
 // Admin Pages
@@ -71,6 +72,7 @@ function App() {
           <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
           <Route path="/market" element={<PrivateRoute><Market /></PrivateRoute>} />
           <Route path="/quests" element={<PrivateRoute><Quests /></PrivateRoute>} />
+          <Route path="/leaderboard" element={<PrivateRoute><Leaderboard /></PrivateRoute>} />
           
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLogin />} />

@@ -14,6 +14,7 @@ const MainLayout = ({ children }) => {
     { path: '/', icon: <Home className="w-5 h-5 md:w-5 md:h-5" />, label: 'Dashboard' },
     { path: '/market', icon: <ShoppingCart className="w-5 h-5 md:w-5 md:h-5" />, label: 'Bozor' },
     { path: '/quests', icon: <ScrollText className="w-5 h-5 md:w-5 md:h-5" />, label: 'Buyurtma' },
+    { path: '/leaderboard', icon: <Trophy className="w-5 h-5 md:w-5 md:h-5" />, label: 'Reyting' },
   ];
 
   return (
