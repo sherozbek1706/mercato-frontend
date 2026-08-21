@@ -363,7 +363,7 @@ const Market = () => {
                              <h4 className="font-bold text-white text-lg">{tx.item_name} <span className="text-sm font-normal text-slate-500">x{tx.quantity_sold}</span></h4>
                              <p className="text-xs text-slate-400 mt-1">
                                {new Date(tx.created_at).toLocaleString()} • 
-                               {isSeller ? ` Xaridor: ${tx.buyer_name || 'Noma\'lum'}` : ` Sotuvchi: ${tx.seller_name || tx.bot_seller_name || 'Noma\'lum'}`}
+                               {isSeller ? ` Xaridor: ${tx.buyer_name || tx.bot_buyer_name || 'Noma\'lum'}` : ` Sotuvchi: ${tx.seller_name || tx.bot_seller_name || 'Noma\'lum'}`}
                              </p>
                            </div>
                          </div>

@@ -14,7 +14,8 @@ const AdminSettings = () => {
     bot_buyer_enabled: false,
     bot_buyer_probability: 70,
     bot_buyer_min_qty: 1,
-    bot_buyer_max_qty: 5
+    bot_buyer_max_qty: 5,
+    bot_buyer_names: 'Ali, Hasan, Boyota, Savdogar'
   });
 
   useEffect(() => {
@@ -31,7 +32,8 @@ const AdminSettings = () => {
         bot_buyer_enabled: res.data.bot_buyer_enabled === 'true',
         bot_buyer_probability: res.data.bot_buyer_probability !== undefined ? Number(res.data.bot_buyer_probability) : 70,
         bot_buyer_min_qty: res.data.bot_buyer_min_qty !== undefined ? Number(res.data.bot_buyer_min_qty) : 1,
-        bot_buyer_max_qty: res.data.bot_buyer_max_qty !== undefined ? Number(res.data.bot_buyer_max_qty) : 5
+        bot_buyer_max_qty: res.data.bot_buyer_max_qty !== undefined ? Number(res.data.bot_buyer_max_qty) : 5,
+        bot_buyer_names: res.data.bot_buyer_names || 'Ali, Hasan, Boyota, Savdogar'
       });
     } catch (error) {
       toast.error('Sozlamalarni yuklashda xatolik');
@@ -164,6 +166,19 @@ const AdminSettings = () => {
                       onChange={e => setFormData({...formData, bot_buyer_max_qty: Number(e.target.value)})} 
                       className="w-full px-4 py-2 border rounded-lg bg-white" 
                     />
+                  </div>
+                  <div className="md:col-span-2 mt-2">
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      Bot ismlari (vergul bilan ajrating)
+                    </label>
+                    <input 
+                      type="text" 
+                      placeholder="Ali, Hasan, Savdogar_1, Boyota"
+                      value={formData.bot_buyer_names} 
+                      onChange={e => setFormData({...formData, bot_buyer_names: e.target.value})} 
+                      className="w-full px-4 py-2 border rounded-lg bg-white" 
+                    />
+                    <p className="text-[11px] text-slate-500 mt-1">Bot xarid qilganda shu ismlardan birini tasodifiy (random) tanlaydi.</p>
                   </div>
                 </div>
               )}

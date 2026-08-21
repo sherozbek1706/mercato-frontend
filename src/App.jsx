@@ -24,6 +24,7 @@ import AdminSettings from './pages/admin/AdminSettings';
 import AdminBots from './pages/admin/AdminBots';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminStatistics from './pages/admin/AdminStatistics';
+import AdminBotPurchases from './pages/admin/AdminBotPurchases';
 
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
@@ -85,6 +86,7 @@ function App() {
             <Route path="bots" element={<AdminBots />} />
             <Route path="orders" element={<AdminOrders />} />
             <Route path="stats" element={<AdminStatistics />} />
+            <Route path="bot-purchases" element={<AdminBotPurchases />} />
           </Route>
         </Routes>
         <Toaster position="top-right" toastOptions={{
