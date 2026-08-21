@@ -15,6 +15,8 @@ const AdminSettings = () => {
     bot_buyer_probability: 70,
     bot_buyer_min_qty: 1,
     bot_buyer_max_qty: 5,
+    bot_buyer_min_price: 0.01,
+    bot_buyer_max_price: 1000,
     bot_buyer_names: 'Ali, Hasan, Boyota, Savdogar'
   });
 
@@ -33,6 +35,8 @@ const AdminSettings = () => {
         bot_buyer_probability: res.data.bot_buyer_probability !== undefined ? Number(res.data.bot_buyer_probability) : 70,
         bot_buyer_min_qty: res.data.bot_buyer_min_qty !== undefined ? Number(res.data.bot_buyer_min_qty) : 1,
         bot_buyer_max_qty: res.data.bot_buyer_max_qty !== undefined ? Number(res.data.bot_buyer_max_qty) : 5,
+        bot_buyer_min_price: res.data.bot_buyer_min_price !== undefined ? Number(res.data.bot_buyer_min_price) : 0.01,
+        bot_buyer_max_price: res.data.bot_buyer_max_price !== undefined ? Number(res.data.bot_buyer_max_price) : 1000,
         bot_buyer_names: res.data.bot_buyer_names || 'Ali, Hasan, Boyota, Savdogar'
       });
     } catch (error) {
@@ -164,6 +168,28 @@ const AdminSettings = () => {
                       type="number" min="1"
                       value={formData.bot_buyer_max_qty} 
                       onChange={e => setFormData({...formData, bot_buyer_max_qty: Number(e.target.value)})} 
+                      className="w-full px-4 py-2 border rounded-lg bg-white" 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      Min. narx (1 dona uchun)
+                    </label>
+                    <input 
+                      type="number" step="0.01" min="0"
+                      value={formData.bot_buyer_min_price} 
+                      onChange={e => setFormData({...formData, bot_buyer_min_price: Number(e.target.value)})} 
+                      className="w-full px-4 py-2 border rounded-lg bg-white" 
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      Max. narx (1 dona uchun)
+                    </label>
+                    <input 
+                      type="number" step="0.01" min="0"
+                      value={formData.bot_buyer_max_price} 
+                      onChange={e => setFormData({...formData, bot_buyer_max_price: Number(e.target.value)})} 
                       className="w-full px-4 py-2 border rounded-lg bg-white" 
                     />
                   </div>
