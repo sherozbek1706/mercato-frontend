@@ -68,6 +68,23 @@ const AdminUsers = () => {
   return (
     <div>
       <h2 className="text-2xl font-bold text-slate-900 mb-6">Foydalanuvchilar ({users.length})</h2>
+
+      {users.length > 0 && (
+        <div className="flex flex-wrap gap-3 mb-6">
+          {Object.entries(
+            users.reduce((acc, user) => {
+              const profName = user.profession_name || 'Kasbsiz';
+              acc[profName] = (acc[profName] || 0) + 1;
+              return acc;
+            }, {})
+          ).map(([prof, count]) => (
+            <div key={prof} className="bg-white px-4 py-2 rounded-lg shadow-sm border border-slate-200 text-sm flex items-center gap-2">
+              <span className="font-bold text-blue-600">{count} ta</span> 
+              <span className="text-slate-700 font-medium capitalize">{prof.toLowerCase()}</span>
+            </div>
+          ))}
+        </div>
+      )}
       
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
         <table className="w-full text-left">
