@@ -93,34 +93,55 @@ const AdminUsers = () => {
               <th className="px-6 py-4 text-sm font-semibold text-slate-600">ID</th>
               <th className="px-6 py-4 text-sm font-semibold text-slate-600">Foydalanuvchi</th>
               <th className="px-6 py-4 text-sm font-semibold text-slate-600">Kasb</th>
+              <th className="px-6 py-4 text-sm font-semibold text-slate-600">Daraja / XP</th>
+              <th className="px-6 py-4 text-sm font-semibold text-slate-600">Farmon #</th>
               <th className="px-6 py-4 text-sm font-semibold text-slate-600">Balans</th>
               <th className="px-6 py-4 text-sm font-semibold text-slate-600">Energiya</th>
               <th className="px-6 py-4 text-sm font-semibold text-slate-600 text-right">Amallar</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {users.map(user => (
-              <tr key={user.id} className="hover:bg-slate-50">
-                <td className="px-6 py-4 text-sm text-slate-500 font-mono truncate max-w-[100px]">{user.id}</td>
-                <td className="px-6 py-4 text-sm font-medium text-slate-900">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 overflow-hidden flex-shrink-0">
-                      {user.profile_picture ? (
-                        <img src={user.profile_picture.startsWith('http') ? user.profile_picture : `${api.defaults.baseURL.replace('/api', '')}${user.profile_picture}`} alt="avatar" className="w-full h-full object-cover" />
+            {users.map(u => (
+              <tr key={u.id} className="hover:bg-slate-50 transition-colors">
+                <td className="px-6 py-4 text-sm text-slate-500 font-mono">{u.id.substring(0, 8)}...</td>
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border border-slate-300">
+                      {u.profile_picture ? (
+                        <img src={u.profile_picture.startsWith('http') ? u.profile_picture : `${api.defaults.baseURL.replace('/api', '')}${u.profile_picture}`} alt="avatar" className="w-full h-full object-cover" />
                       ) : (
-                        <img src={`https://api.dicebear.com/7.x/bottts/svg?seed=${user.username}`} alt="avatar" className="w-full h-full object-cover bg-slate-100" />
+                        <img src={`https://api.dicebear.com/7.x/bottts/svg?seed=${u.username}`} alt="avatar" className="w-full h-full object-cover bg-slate-100" />
                       )}
                     </div>
-                    <span>{user.username}</span>
+                    <div>
+                      <div className="font-bold text-slate-900">{u.username}</div>
+                    </div>
                   </div>
                 </td>
-                <td className="px-6 py-4 text-sm text-slate-600">{user.profession_name}</td>
-                <td className="px-6 py-4 text-sm text-amber-600 font-bold">{Number(user.balance).toFixed(2)}</td>
-                <td className="px-6 py-4 text-sm text-blue-600 font-medium">{user.energy}</td>
-                <td className="px-6 py-4 text-sm text-right">
+                <td className="px-6 py-4 text-sm font-medium text-slate-700 capitalize">
+                  {u.profession_name || <span className="text-slate-400 italic">Kasb tanlanmagan</span>}
+                </td>
+                <td className="px-6 py-4">
+                  <div className="flex flex-col">
+                    <span className="text-sm font-bold text-blue-600">Lvl: {u.level || 1}</span>
+                    <span className="text-xs text-slate-500 font-medium">XP: {u.xp || 0}</span>
+                  </div>
+                </td>
+                <td className="px-6 py-4 text-sm font-bold text-red-600">
+                  {u.current_quest_index || 0} - Farmon
+                </td>
+                <td className="px-6 py-4">
+                  <span className="inline-flex items-center gap-1 font-bold text-amber-500 bg-amber-50 px-2.5 py-1 rounded-full text-sm">
+                    {Number(u.balance).toFixed(2)} 🪙
+                  </span>
+                </td>
+                <td className="px-6 py-4 text-sm font-medium text-slate-700">
+                  ⚡ {u.energy}
+                </td>
+                <td className="px-6 py-4 text-right">
                   <div className="flex justify-end gap-2">
                     <button 
-                      onClick={() => openDetails(user.id)}
+                      onClick={() => openDetails(u.id)}
                       className="text-blue-600 hover:text-blue-800 font-medium bg-blue-50 px-3 py-1 rounded-md"
                     >
                       Batafsil
