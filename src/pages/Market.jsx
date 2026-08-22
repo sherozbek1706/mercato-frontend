@@ -114,8 +114,9 @@ const Market = () => {
     }
   };
 
-  const getItemIcon = (listing) => {
-    if (listing && listing.item_icon) return listing.item_icon;
+  const getItemIcon = (item) => {
+    if (item && item.item_icon) return item.item_icon;
+    if (item && item.icon) return item.icon;
     return '📦';
   };
 
@@ -241,20 +242,51 @@ const Market = () => {
 
               <form onSubmit={handleSell} className="space-y-5">
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Mahsulotni tanlang</label>
-                  <select 
-                    className="w-full input-glass bg-slate-900 border-slate-700"
-                    value={sellItemId}
-                    onChange={(e) => setSellItemId(e.target.value)}
-                    required
-                  >
-                    <option value="" className="text-slate-500">-- Tanlang --</option>
-                    {user?.inventory?.filter(i => i.quantity > 0).map(item => (
-                      <option key={item.item_id} value={item.item_id}>
-                         {item.name} (Sizda bor: {item.quantity} ta)
-                      </option>
-                    ))}
-                  </select>
+                  <div className="flex justify-between items-end mb-3">
+                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">Sotish uchun mahsulotni tanlang</label>
+                    {sellItemId && (
+                      <span className="text-[10px] font-bold text-accent bg-accent/10 px-2 py-0.5 rounded-md border border-accent/20">
+                        {user?.inventory?.find(i => String(i.item_id) === String(sellItemId))?.name} tanlandi
+                      </span>
+                    )}
+                  </div>
+                  <div className="bg-slate-900/40 p-3 md:p-4 rounded-xl border border-slate-800">
+                    <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-2 md:gap-3 max-h-56 overflow-y-auto no-scrollbar">
+                      {user?.inventory?.filter(i => i.quantity > 0).length === 0 ? (
+                         <div className="col-span-full text-center py-6 text-slate-500 text-sm">
+                           Sotish uchun hech qanday mahsulot yo'q.
+                         </div>
+                      ) : (
+                        user?.inventory?.filter(i => i.quantity > 0).map(item => {
+                          const isSelected = String(sellItemId) === String(item.item_id);
+                          return (
+                            <div 
+                              key={item.item_id} 
+                              onClick={() => setSellItemId(String(item.item_id))}
+                              className={`aspect-square rounded-xl flex flex-col items-center justify-center relative cursor-pointer transition-all ${
+                                isSelected
+                                ? 'bg-accent/10 border-2 border-accent shadow-[0_0_15px_rgba(251,191,36,0.3)] z-10' 
+                                : 'bg-surfaceSolid border border-slate-700 hover:border-slate-500 hover:bg-slate-800'
+                              }`}
+                            >
+                              <span className="text-2xl md:text-3xl filter drop-shadow-md mb-1">{getItemIcon(item)}</span>
+                              <span className="text-[9px] md:text-[10px] text-slate-400 font-bold truncate w-full text-center px-1">
+                                {item.name}
+                              </span>
+                              <span className="absolute top-1 right-1 bg-slate-900 text-white text-[9px] font-bold px-1 rounded border border-slate-700 shadow-sm">
+                                x{item.quantity}
+                              </span>
+                              {isSelected && (
+                                 <div className="absolute -top-1.5 -left-1.5 bg-accent text-slate-900 rounded-full w-4 h-4 flex items-center justify-center shadow-md">
+                                   <span className="text-[10px] font-black">✓</span>
+                                 </div>
+                              )}
+                            </div>
+                          )
+                        })
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -345,36 +377,72 @@ const Market = () => {
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
           >
             <GlassCard>
+              <div className="flex flex-col items-center justify-center mb-6 md:mb-8 text-center">
+                <div className="w-12 h-12 md:w-16 md:h-16 bg-secondary/20 rounded-full flex items-center justify-center mb-3 md:mb-4 border border-secondary/30 shadow-[0_0_15px_rgba(139,92,246,0.2)]">
+                  <History className="w-6 h-6 md:w-8 md:h-8 text-secondary" />
+                </div>
+                <h2 className="text-xl md:text-3xl font-black text-white uppercase tracking-wider">Savdo Tarixi</h2>
+                <p className="text-xs md:text-sm text-slate-400 mt-1">Bozordagi barcha oldi-sotdi operatsiyalaringiz</p>
+              </div>
+
               {loading ? (
-                <div className="text-center text-slate-500 py-10">Yuklanmoqda...</div>
+                <div className="flex justify-center items-center py-20">
+                  <div className="w-10 h-10 border-4 border-secondary border-t-transparent rounded-full animate-spin"></div>
+                </div>
               ) : history.length === 0 ? (
-                <div className="text-center text-slate-500 py-10">Sizda hali savdo tarixi yo'q.</div>
+                <div className="text-center py-16 px-4 bg-slate-900/40 rounded-2xl border border-slate-800/50">
+                  <History className="w-16 h-16 mx-auto text-slate-700 mb-4 opacity-50" />
+                  <h3 className="text-xl font-bold text-slate-400">Tarix bo'sh</h3>
+                  <p className="text-slate-500 mt-2 text-sm">Sizda hali savdo operatsiyalari mavjud emas</p>
+                </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-3 md:space-y-4">
                   {history.map((tx) => {
                     const isSeller = tx.seller_name === user.username;
                     return (
-                      <div key={tx.id} className="bg-slate-900/50 p-4 rounded-xl border border-slate-800 flex items-center justify-between hover:bg-slate-800/50 transition-colors">
-                         <div className="flex items-center space-x-4">
-                           <div className={`w-12 h-12 rounded-full flex items-center justify-center text-xl bg-surfaceSolid border ${isSeller ? 'border-success' : 'border-danger'}`}>
-                             {getItemIcon(tx)}
-                           </div>
-                           <div>
-                             <h4 className="font-bold text-white text-lg">{tx.item_name} <span className="text-sm font-normal text-slate-500">x{tx.quantity_sold}</span></h4>
-                             <p className="text-xs text-slate-400 mt-1">
-                               {new Date(tx.created_at).toLocaleString()} • 
-                               {isSeller ? ` Xaridor: ${tx.buyer_name || tx.bot_buyer_name || 'Noma\'lum'}` : ` Sotuvchi: ${tx.seller_name || tx.bot_seller_name || 'Noma\'lum'}`}
-                             </p>
-                           </div>
-                         </div>
-                         <div className="text-right">
-                            <span className={`text-xs font-bold uppercase tracking-wider ${isSeller ? 'text-success' : 'text-danger'}`}>
-                              {isSeller ? '+ Foyda' : '- Xarajat'}
-                            </span>
-                            <div className={`text-xl font-black flex items-center justify-end ${isSeller ? 'text-success' : 'text-danger'}`}>
-                               {isSeller ? '+' : '-'}{Number(tx.total_price).toFixed(2)} <Coins className="w-4 h-4 ml-1" />
+                      <div 
+                        key={tx.id} 
+                        className="group relative overflow-hidden bg-slate-900/60 p-3 sm:p-4 md:p-5 rounded-2xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 hover:bg-slate-800/60 hover:border-slate-700 transition-all duration-300"
+                      >
+                        {/* Status Indicator Bar */}
+                        <div className={`absolute left-0 top-0 bottom-0 w-1 ${isSeller ? 'bg-success/50' : 'bg-danger/50'}`}></div>
+                        
+                        <div className="flex items-center space-x-3 sm:space-x-4 pl-1 sm:pl-2">
+                          <div className={`w-12 h-12 sm:w-14 sm:h-14 shrink-0 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl bg-surfaceSolid border shadow-inner ${isSeller ? 'border-success/30 shadow-success/10' : 'border-danger/30 shadow-danger/10'}`}>
+                            {getItemIcon(tx)}
+                          </div>
+                          
+                          <div className="flex flex-col justify-center">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className={`text-[10px] sm:text-xs font-bold px-2 py-0.5 rounded-md uppercase tracking-wider ${isSeller ? 'bg-success/20 text-success' : 'bg-danger/20 text-danger'}`}>
+                                {isSeller ? 'Sotuv' : 'Xarid'}
+                              </span>
+                              <span className="text-[10px] sm:text-xs text-slate-400 font-medium">
+                                {new Date(tx.created_at).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute:'2-digit' })}
+                              </span>
                             </div>
-                         </div>
+                            
+                            <h4 className="font-extrabold text-white text-base sm:text-lg leading-tight mb-1">
+                              {tx.item_name} <span className="text-sm font-medium text-slate-400">x{tx.quantity_sold}</span>
+                            </h4>
+                            
+                            <p className="text-[11px] sm:text-xs text-slate-500 font-medium flex items-center">
+                              <span className="mr-1">{isSeller ? 'Xaridor:' : 'Sotuvchi:'}</span>
+                              <span className="text-slate-300">
+                                {isSeller ? (tx.buyer_name || tx.bot_buyer_name || 'Noma\'lum') : (tx.seller_name || tx.bot_seller_name || 'Noma\'lum')}
+                              </span>
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center border-t sm:border-t-0 border-slate-800 pt-3 sm:pt-0 mt-1 sm:mt-0">
+                          <span className={`text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-0.5 sm:mb-1 ${isSeller ? 'text-success/70' : 'text-danger/70'}`}>
+                            {isSeller ? '+ Foyda' : '- Xarajat'}
+                          </span>
+                          <div className={`text-lg sm:text-xl md:text-2xl font-black flex items-center justify-end ${isSeller ? 'text-success' : 'text-danger'} drop-shadow-sm`}>
+                            {isSeller ? '+' : '-'}{Number(tx.total_price).toFixed(2)} <Coins className="w-4 h-4 sm:w-5 sm:h-5 ml-1.5 opacity-80" />
+                          </div>
+                        </div>
                       </div>
                     )
                   })}

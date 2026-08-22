@@ -12,6 +12,7 @@ import MainLayout from './components/layout/MainLayout';
 
 import Quests from './pages/Quests';
 import Leaderboard from './pages/Leaderboard';
+import Orders from './pages/Orders';
 import ProfessionModal from './components/modals/ProfessionModal';
 
 // Admin Pages
@@ -25,7 +26,9 @@ import AdminBots from './pages/admin/AdminBots';
 import AdminOrders from './pages/admin/AdminOrders';
 import AdminStatistics from './pages/admin/AdminStatistics';
 import AdminBotPurchases from './pages/admin/AdminBotPurchases';
-
+import AdminLevels from './pages/admin/AdminLevels';
+import AdminQuests from './pages/admin/AdminQuests';
+import AdminGlobalQuests from './pages/admin/AdminGlobalQuests';
 const PrivateRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
   if (loading) return <div className="text-slate-400 text-center mt-20 font-medium">Yuklanmoqda...</div>;
@@ -72,6 +75,7 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
           <Route path="/market" element={<PrivateRoute><Market /></PrivateRoute>} />
+          <Route path="/orders" element={<PrivateRoute><Orders /></PrivateRoute>} />
           <Route path="/quests" element={<PrivateRoute><Quests /></PrivateRoute>} />
           <Route path="/leaderboard" element={<PrivateRoute><Leaderboard /></PrivateRoute>} />
           
@@ -87,6 +91,9 @@ function App() {
             <Route path="orders" element={<AdminOrders />} />
             <Route path="stats" element={<AdminStatistics />} />
             <Route path="bot-purchases" element={<AdminBotPurchases />} />
+            <Route path="levels" element={<AdminLevels />} />
+            <Route path="quests" element={<AdminQuests />} />
+            <Route path="global-quests" element={<AdminGlobalQuests />} />
           </Route>
         </Routes>
         <Toaster position="top-right" toastOptions={{

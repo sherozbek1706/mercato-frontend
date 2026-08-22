@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
-import { Home, ShoppingCart, Trophy, Settings, LogOut, Coins, Battery, Shield, ScrollText, X } from 'lucide-react';
+import { Home, ShoppingCart, Trophy, Settings, LogOut, Coins, Battery, Shield, ScrollText, X, ChevronLeft, ChevronRight, Star, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import api from '../../services/api';
 import toast from 'react-hot-toast';
@@ -10,6 +10,7 @@ const MainLayout = ({ children }) => {
   const { user, logout, fetchUser } = useContext(AuthContext);
   const location = useLocation();
   const [isUploading, setIsUploading] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const cost = user?.settings?.profile_picture_cost ? Number(user.settings.profile_picture_cost) : 0;
   const removeRefund = user?.settings?.profile_picture_remove_coin ? Number(user.settings.profile_picture_remove_coin) : 0;
 
@@ -75,7 +76,8 @@ const MainLayout = ({ children }) => {
   const menuItems = [
     { path: '/', icon: <Home className="w-5 h-5 md:w-5 md:h-5" />, label: 'Dashboard' },
     { path: '/market', icon: <ShoppingCart className="w-5 h-5 md:w-5 md:h-5" />, label: 'Bozor' },
-    { path: '/quests', icon: <ScrollText className="w-5 h-5 md:w-5 md:h-5" />, label: 'Buyurtma' },
+    { path: '/orders', icon: <ScrollText className="w-5 h-5 md:w-5 md:h-5" />, label: 'Davlat Buyurtmasi' },
+    { path: '/quests', icon: <Target className="w-5 h-5 md:w-5 md:h-5 text-red-500" />, label: 'Topshiriqlar' },
     { path: '/leaderboard', icon: <Trophy className="w-5 h-5 md:w-5 md:h-5" />, label: 'Reyting' },
   ];
 
@@ -85,23 +87,37 @@ const MainLayout = ({ children }) => {
       {/* Desktop Sidebar */}
       <motion.aside 
         initial={{ x: -250 }}
-        animate={{ x: 0 }}
-        className="hidden md:flex w-64 bg-surfaceSolid border-r border-slate-800 flex-col justify-between h-full shadow-2xl relative z-20"
+        animate={{ width: isCollapsed ? 80 : 256, x: 0 }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
+        className="hidden md:flex bg-surfaceSolid border-r border-slate-800 flex-col justify-between h-full shadow-2xl relative z-20 shrink-0"
       >
-        <div>
-          <div className="p-6 pb-2 border-b border-slate-800">
-            <h1 className="text-3xl game-title text-center mb-2">MERCATO</h1>
-            <p className="text-xs text-slate-500 text-center uppercase tracking-widest font-bold">Simulator</p>
+        <button 
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className="absolute -right-3 top-8 bg-slate-800 border border-slate-700 rounded-full p-1 text-slate-400 hover:text-white z-50 transition-colors shadow-lg"
+        >
+          {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+        </button>
+
+        <div className="overflow-hidden">
+          <div className={`p-6 pb-2 border-b border-slate-800 h-24 flex flex-col justify-center items-center transition-all duration-300`}>
+            {isCollapsed ? (
+              <h1 className="text-3xl game-title text-center mb-1">M</h1>
+            ) : (
+              <>
+                <h1 className="text-3xl game-title text-center mb-2">MERCATO</h1>
+                <p className="text-xs text-slate-500 text-center uppercase tracking-widest font-bold">Simulator</p>
+              </>
+            )}
           </div>
           
-          <div className="p-4 flex flex-col items-center border-b border-slate-800">
+          <div className={`p-4 flex flex-col items-center border-b border-slate-800 transition-all duration-300 ${isCollapsed ? 'py-6' : ''}`}>
             <div 
-              className={`w-20 h-20 rounded-full bg-slate-800 border-2 border-primary p-1 mb-3 relative animate-float group ${!isUploading && !user.profile_picture ? 'cursor-pointer' : ''}`}
+              className={`${isCollapsed ? 'w-10 h-10 mb-0 border-primary/50' : 'w-20 h-20 mb-3 border-2 border-primary'} rounded-full bg-slate-800 p-1 relative animate-float group transition-all duration-300 ${!isUploading && !user.profile_picture ? 'cursor-pointer' : ''}`}
               onClick={() => !isUploading && !user.profile_picture && document.getElementById('profile-pic-upload').click()}
             >
                {isUploading ? (
                  <div className="rounded-full w-full h-full bg-slate-900 flex items-center justify-center">
-                   <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                   <div className={`${isCollapsed ? 'w-4 h-4 border-2' : 'w-8 h-8 border-4'} border-primary border-t-transparent rounded-full animate-spin`}></div>
                  </div>
                ) : (
                  <>
@@ -110,7 +126,7 @@ const MainLayout = ({ children }) => {
                      alt="avatar" 
                      className="rounded-full w-full h-full object-cover bg-slate-900" 
                    />
-                   {!user.profile_picture && (
+                   {!user.profile_picture && !isCollapsed && (
                      <div className="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                        <span className="text-[10px] text-white text-center font-bold px-2">{cost > 0 ? `Rasm yuklash (${cost} 🪙)` : 'Rasm yuklash'}</span>
                      </div>
@@ -125,7 +141,7 @@ const MainLayout = ({ children }) => {
                  onChange={handleProfilePicUpload} 
                  disabled={isUploading}
                />
-               {user.profile_picture && !isUploading && (
+               {user.profile_picture && !isUploading && !isCollapsed && (
                  <button 
                    onClick={handleProfilePicRemove}
                    className="absolute -top-1 -right-1 bg-danger text-white rounded-full p-1 shadow-lg hover:bg-red-600 transition-colors opacity-0 group-hover:opacity-100"
@@ -135,24 +151,37 @@ const MainLayout = ({ children }) => {
                  </button>
                )}
             </div>
-            <h2 className="text-xl font-bold text-white">{user.username}</h2>
-            <div className="flex items-center text-secondary text-sm mt-1 bg-secondary/10 px-3 py-1 rounded-full font-medium">
-               <Shield className="w-4 h-4 mr-1" />
-               {user.profession || 'Yangi boshlovchi'}
-            </div>
+            
+            <AnimatePresence>
+              {!isCollapsed && (
+                <motion.div 
+                  initial={{ opacity: 0, height: 0 }} 
+                  animate={{ opacity: 1, height: 'auto' }} 
+                  exit={{ opacity: 0, height: 0 }} 
+                  className="flex flex-col items-center overflow-hidden whitespace-nowrap"
+                >
+                  <h2 className="text-xl font-bold text-white mt-1 truncate max-w-full">{user.username}</h2>
+                  <div className="flex items-center text-secondary text-sm mt-1 bg-secondary/10 px-3 py-1 rounded-full font-medium">
+                     <Shield className="w-4 h-4 mr-1" />
+                     {user.profession || 'Yangi boshlovchi'}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
-          <nav className="p-4 space-y-2 mt-4">
+          <nav className="p-4 space-y-2 mt-2">
             {menuItems.map(item => {
               const isActive = location.pathname === item.path;
               return (
                 <NavLink 
                   key={item.path} 
                   to={item.path}
-                  className={`flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-300 font-medium ${isActive ? 'bg-primary text-white shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
+                  title={isCollapsed ? item.label : undefined}
+                  className={`flex items-center ${isCollapsed ? 'justify-center px-0' : 'space-x-3 px-4'} py-3 rounded-xl transition-all duration-300 font-medium overflow-hidden whitespace-nowrap ${isActive ? 'bg-primary text-white shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
                 >
-                  {item.icon}
-                  <span>{item.label}</span>
+                  <div className="shrink-0">{item.icon}</div>
+                  {!isCollapsed && <span className="opacity-100 transition-opacity duration-300">{item.label}</span>}
                 </NavLink>
               )
             })}
@@ -160,9 +189,13 @@ const MainLayout = ({ children }) => {
         </div>
 
         <div className="p-4 border-t border-slate-800">
-          <button onClick={logout} className="flex items-center justify-center w-full space-x-2 text-slate-400 hover:text-danger hover:bg-danger/10 p-3 rounded-xl transition-colors font-medium">
-            <LogOut className="w-5 h-5" />
-            <span>Tizimdan chiqish</span>
+          <button 
+            onClick={logout} 
+            title={isCollapsed ? 'Tizimdan chiqish' : undefined}
+            className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-center space-x-2'} w-full text-slate-400 hover:text-danger hover:bg-danger/10 p-3 rounded-xl transition-colors font-medium overflow-hidden whitespace-nowrap`}
+          >
+            <div className="shrink-0"><LogOut className="w-5 h-5" /></div>
+            {!isCollapsed && <span>Tizimdan chiqish</span>}
           </button>
         </div>
       </motion.aside>
@@ -212,6 +245,22 @@ const MainLayout = ({ children }) => {
            </div>
            
            <div className="flex items-center space-x-3 md:space-x-8">
+              {/* XP and Level Bar */}
+              <div className="flex flex-col w-20 md:w-32 hidden sm:flex">
+                 <div className="flex justify-between text-[10px] md:text-xs font-bold mb-1">
+                   <span className="text-slate-400 uppercase tracking-wider flex items-center"><Star className="w-3 h-3 mr-1 text-yellow-400"/> Lvl {user.level || 1}</span>
+                   <span className="text-yellow-400">{user.xp || 0}</span>
+                 </div>
+                 <div className="w-full bg-slate-800 rounded-full h-2 border border-slate-700 overflow-hidden relative" title={`${user.xp || 0} / ${user.next_level_xp || 0} XP`}>
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      animate={{ width: `${Math.min(100, ((user.xp || 0) / (user.next_level_xp || 1)) * 100)}%` }}
+                      transition={{ duration: 0.5, ease: "easeOut" }}
+                      className="h-full rounded-full bg-gradient-to-r from-yellow-600 to-yellow-400 shadow-[0_0_10px_rgba(250,204,21,0.5)]"
+                    />
+                 </div>
+              </div>
+
               {/* Energy Bar */}
               <div className="flex flex-col w-24 md:w-48">
                  <div className="flex justify-between text-[10px] md:text-xs font-bold mb-1">

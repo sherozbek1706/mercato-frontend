@@ -3,6 +3,7 @@ import axios from "axios";
 const api = axios.create({
   // baseURL: `${import.meta.env.VITE_API_URL}`,
   baseURL: `https://mercato-backend-9n0y.onrender.com/api`,
+
 });
 
 // Interceptor for attaching token

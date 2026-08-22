@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import GlassCard from '../components/common/GlassCard';
-import { Activity, Battery, Coins, Briefcase, Loader2, Play, Utensils, Zap, Package, Hammer, Search } from 'lucide-react';
+import { Activity, Battery, Coins, Briefcase, Loader2, Play, Utensils, Zap, Package, Hammer, Search, ArrowRight } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
 import api from '../services/api';
 import toast from 'react-hot-toast';
@@ -164,7 +164,7 @@ const Dashboard = () => {
         </GlassCard>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
         
         {/* Inventory Bag */}
         <GlassCard delay={0.3} className="xl:col-span-2 min-h-[400px]">
@@ -172,13 +172,13 @@ const Dashboard = () => {
             <h2 className="text-lg md:text-2xl font-black text-white flex items-center tracking-wider">
               <Package className="mr-2 md:mr-3 text-accent w-5 h-5 md:w-6 md:h-6" /> Mening Xaltam
             </h2>
-            <div className="text-[10px] md:text-sm text-slate-400 bg-slate-900 px-2 md:px-3 py-1 rounded-full border border-slate-700">
-              {user.inventory?.length || 0} / 16 Slot
+            <div className="text-[10px] md:text-sm text-slate-400 bg-slate-900 px-2 md:px-3 py-1 rounded-full border border-slate-700 shrink-0">
+              {user.inventory?.length || 0} / 16
             </div>
           </div>
           
-          <div className="bg-slate-900/50 p-6 rounded-2xl border border-slate-800">
-            <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-8 gap-3">
+          <div className="bg-slate-900/50 p-4 md:p-6 rounded-2xl border border-slate-800">
+            <div className="grid grid-cols-4 sm:grid-cols-5 gap-3 md:gap-4">
               {inventorySlots.map((item, idx) => (
                 <div 
                   key={idx} 
@@ -191,13 +191,13 @@ const Dashboard = () => {
                 >
                   {item ? (
                     <>
-                      <span className="text-3xl mb-1 filter drop-shadow-md">{getItemIcon(item)}</span>
-                      <span className="absolute bottom-1 right-1 bg-slate-900 text-white text-[10px] font-bold px-1.5 rounded border border-slate-700">
+                      <span className="text-3xl md:text-4xl mb-1 filter drop-shadow-md">{getItemIcon(item)}</span>
+                      <span className="absolute bottom-1.5 right-1.5 bg-slate-900 text-white text-[10px] md:text-xs font-bold px-1.5 rounded border border-slate-700">
                         x{item.quantity}
                       </span>
                     </>
                   ) : (
-                    <div className="w-2 h-2 rounded-full bg-slate-800" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-slate-800" />
                   )}
                 </div>
               ))}
@@ -206,100 +206,83 @@ const Dashboard = () => {
         </GlassCard>
         
         {/* Profession Details */}
-        <GlassCard delay={0.4} className="min-h-[400px]">
+        <GlassCard delay={0.4} className="xl:col-span-3 min-h-[400px]">
           <h2 className="text-lg md:text-xl font-bold text-white mb-6 flex items-center border-b border-slate-700 pb-4">
             <Briefcase className="mr-2 text-secondary w-5 h-5 md:w-6 md:h-6" /> 
             <span>{user.profession || 'Noma\'lum'}</span>
           </h2>
           
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-xs uppercase tracking-wider text-slate-500 mb-3 font-bold">Retsept (Nima kerak)</h3>
-              <div className="bg-slate-900/50 p-4 rounded-xl border border-slate-800 space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                   <span className="text-slate-400">⚡ Energiya</span>
-                   <span className="text-danger font-bold">-{user.recipeDetails?.energy_cost || 10}</span>
-                </div>
-                {user.recipeDetails?.consume?.map((c, i) => (
-                  <div key={i} className="flex items-center justify-between text-sm">
-                    <span className="text-slate-400 flex items-center"><span className="mr-2 opacity-70">{getItemIcon(c)}</span> {c.name}</span>
-                    <span className="text-danger font-bold">-{c.qty}</span>
-                  </div>
-                ))}
-                {(!user.recipeDetails?.consume || user.recipeDetails.consume.length === 0) && (
-                  <div className="text-xs text-slate-500 italic mt-2">Boshqa xomashyo talab qilinmaydi.</div>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <h3 className="text-xs uppercase tracking-wider text-slate-500 mb-3 font-bold">Natija (Nima olinadi)</h3>
-              <div className="bg-primary/5 p-4 rounded-xl border border-primary/20 space-y-2">
-                {user.recipeDetails?.produce?.map((p, i) => (
-                  <div key={i} className="flex items-center justify-between text-sm">
-                    <span className="text-primary font-medium flex items-center"><span className="mr-2">{getItemIcon(p)}</span> {p.name}</span>
-                    <span className="text-success font-bold">+{p.qty}</span>
-                  </div>
-                ))}
-                {(!user.recipeDetails?.produce || user.recipeDetails.produce.length === 0) && (
-                  <div className="text-xs text-slate-500 italic">Hech narsa ishlab chiqarmaydi.</div>
-                )}
-              </div>
-            </div>
-            <div className="mt-6 pt-6 border-t border-slate-800">
-              <h3 className="text-xs uppercase tracking-wider text-slate-500 mb-3 font-bold flex items-center">
-                <Search className="w-3 h-3 mr-1" /> Bozor holati (Kalkulyator)
-              </h3>
-              
-              <div className="bg-slate-900/80 p-4 rounded-xl border border-slate-700">
-                {(() => {
-                  const totalCost = user.recipeDetails?.consume?.reduce((acc, c) => acc + (c.qty * (c.avg_price || 0)), 0) || 0;
-                  const producedItem = user.recipeDetails?.produce?.[0];
+          <div className="mt-2">
+            <div className="bg-slate-900/60 rounded-2xl border border-slate-800 p-4 sm:p-5 relative overflow-hidden shadow-lg">
+               {/* Background Glow */}
+               <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
+               <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-danger/10 rounded-full blur-3xl pointer-events-none" />
+               
+               <h3 className="text-[11px] font-black uppercase tracking-widest text-slate-500 mb-5 flex items-center justify-center relative z-10">
+                 <Hammer className="w-3.5 h-3.5 mr-1.5" /> Ishlab chiqarish jarayoni
+               </h3>
+               
+               <div className="flex flex-col md:flex-row items-stretch justify-center gap-4 sm:gap-6 relative z-10">
                   
-                  if (!producedItem) return <div className="text-slate-500 text-sm">Sotish uchun mahsulot yo'q.</div>;
-
-                  const costPerItem = totalCost / producedItem.qty;
-                  const marketAvg = producedItem.avg_price || 0;
-                  
-                  // Agar xomashyo talab qilinmasa (konchi/dehqon), bozor narxini yoki bazaviy narxni tavsiya qilamiz
-                  // Agar xomashyo bo'lsa, tannarxga 30% foyda va 5% soliq (taxminan) qo'shib tavsiya beramiz
-                  let recommendedPrice = 0;
-                  if (costPerItem > 0) {
-                     recommendedPrice = costPerItem * 1.35; // 35% ustama
-                  } else {
-                     recommendedPrice = marketAvg > 0 ? marketAvg : (user.recipeDetails.energy_cost * 0.2);
-                  }
-
-                  return (
-                    <div className="space-y-4">
-                      {totalCost > 0 && (
-                        <div className="flex justify-between items-center text-sm text-slate-400">
-                          <span>1 ta {producedItem.name} ning tannarxi:</span>
-                          <span className="font-bold text-white">{costPerItem.toFixed(2)} <Coins className="w-3 h-3 inline ml-0.5 text-slate-500"/></span>
-                        </div>
-                      )}
-                      
-                      <div className="bg-primary/10 p-3 rounded-lg border border-primary/20 flex flex-col items-center justify-center text-center">
-                         <span className="text-xs font-bold text-primary uppercase tracking-wider mb-1">Tavsiya etiladigan sotish narxi</span>
-                         <span className="text-2xl font-black text-white flex items-center drop-shadow-md">
-                           {recommendedPrice.toFixed(2)} <Coins className="w-5 h-5 ml-1 text-accent" />
-                         </span>
-                         <span className="text-[10px] text-slate-400 mt-1">1 dona {producedItem.name} uchun (foydasi bilan)</span>
+                  {/* LEFT: CONSUME */}
+                  <div className="flex-1 bg-surfaceSolid/70 rounded-xl p-4 border border-slate-700/50 flex flex-col shadow-inner backdrop-blur-sm">
+                    <h4 className="text-[10px] text-danger/90 font-bold uppercase mb-3 text-center tracking-wider">Sarflanadi (Kerak)</h4>
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center justify-between bg-surfaceSolid p-3 sm:p-4 rounded-xl border border-danger/30 hover:border-danger/60 transition-all duration-300 shadow-[0_4px_15px_rgba(0,0,0,0.2)] hover:shadow-[0_0_20px_rgba(239,68,68,0.15)] hover:-translate-y-0.5 group">
+                        <span className="text-sm sm:text-base flex items-center font-bold text-white transition-colors">
+                           <Zap className="w-6 h-6 sm:w-7 sm:h-7 mr-2.5 text-yellow-400 filter drop-shadow-[0_2px_4px_rgba(250,204,21,0.4)] group-hover:scale-110 transition-transform" /> Energiya
+                        </span>
+                        <span className="text-danger font-black text-lg sm:text-xl bg-danger/10 border border-danger/20 px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg shadow-inner">-{user.recipeDetails?.energy_cost || 10}</span>
                       </div>
                       
-                      {marketAvg > 0 && (
-                        <div className="text-center text-xs text-slate-500 mt-2">
-                           Bozordagi hozirgi o'rtacha narx: <span className="font-bold text-slate-300">{Number(marketAvg).toFixed(2)}</span>
+                      {user.recipeDetails?.consume?.map((c, i) => (
+                        <div key={i} className="flex items-center justify-between bg-surfaceSolid p-3 sm:p-4 rounded-xl border border-danger/30 hover:border-danger/60 transition-all duration-300 shadow-[0_4px_15px_rgba(0,0,0,0.2)] hover:shadow-[0_0_20px_rgba(239,68,68,0.15)] hover:-translate-y-0.5 group">
+                          <span className="text-sm sm:text-base flex items-center font-bold text-white transition-colors">
+                            <span className="mr-2.5 text-2xl sm:text-3xl filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] group-hover:scale-110 transition-transform">{getItemIcon(c)}</span> {c.name}
+                          </span>
+                          <span className="text-danger font-black text-lg sm:text-xl bg-danger/10 border border-danger/20 px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg shadow-inner">-{c.qty}</span>
+                        </div>
+                      ))}
+                      
+                      {(!user.recipeDetails?.consume || user.recipeDetails.consume.length === 0) && (
+                        <div className="text-xs text-slate-500 text-center py-4 bg-surfaceSolid/50 rounded-lg border border-slate-700 border-dashed">
+                          Boshqa xomashyo kerak emas
                         </div>
                       )}
                     </div>
-                  );
-                })()}
-              </div>
-            </div>
-            
-            <div className="mt-4 p-4 bg-accent/10 rounded-xl border border-accent/20">
-              <p className="text-sm text-accent/80 font-medium">💡 Maslahat: Retsept ostidagi kalkulyator orqali bozordagi hozirgi narxlar asosida foyda yo zararni ko'rishingiz mumkin.</p>
+                  </div>
+
+                  {/* CENTER: ARROW */}
+                  <div className="flex shrink-0 items-center justify-center py-2 md:py-0">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-slate-800 border border-slate-600 flex items-center justify-center rotate-90 md:rotate-0 shadow-[0_0_15px_rgba(0,0,0,0.3)] z-20">
+                      <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6 text-slate-400" />
+                    </div>
+                  </div>
+
+                  {/* RIGHT: PRODUCE */}
+                  <div className="flex-1 bg-primary/10 rounded-xl p-4 border border-primary/30 flex flex-col shadow-[inset_0_0_20px_rgba(59,130,246,0.05)] backdrop-blur-sm relative overflow-hidden">
+                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 pointer-events-none mix-blend-overlay"></div>
+                    <h4 className="text-[10px] text-success/90 font-bold uppercase mb-3 text-center tracking-wider relative z-10">Olinadi (Natija)</h4>
+                    
+                    <div className="flex flex-col gap-3 flex-1 justify-center relative z-10">
+                      {user.recipeDetails?.produce?.map((p, i) => (
+                        <div key={i} className="flex items-center justify-between bg-surfaceSolid p-3 sm:p-4 rounded-xl border border-primary/40 hover:border-primary transition-all duration-300 shadow-[0_4px_15px_rgba(0,0,0,0.2)] hover:shadow-[0_0_20px_rgba(59,130,246,0.2)] hover:-translate-y-0.5 group">
+                          <span className="text-sm sm:text-base flex items-center font-bold text-white group-hover:text-primary-100 transition-colors">
+                            <span className="mr-2.5 text-2xl sm:text-3xl filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)] group-hover:scale-110 transition-transform">{getItemIcon(p)}</span> {p.name}
+                          </span>
+                          <span className="text-success font-black text-lg sm:text-xl bg-success/10 border border-success/20 px-2 sm:px-3 py-0.5 sm:py-1 rounded-lg shadow-inner">+{p.qty}</span>
+                        </div>
+                      ))}
+                      
+                      {(!user.recipeDetails?.produce || user.recipeDetails.produce.length === 0) && (
+                        <div className="text-xs text-slate-500 text-center py-4 bg-surfaceSolid/50 rounded-lg border border-slate-700 border-dashed">
+                          Hech narsa olinmaydi
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+               </div>
             </div>
           </div>
         </GlassCard>
